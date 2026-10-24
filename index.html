@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carteira Digital de Trânsito (CDT)</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- PDF.js Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #cbd5e1;
+      margin: 0;
+      padding: 0;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Custom SVG Wavy Patterns for Home Tiles */
+    .tile-wave {
+      background-image: radial-gradient(circle at 100% 50%, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.2) 40%, transparent 40.1%),
+                        radial-gradient(circle at 100% 50%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.15) 65%, transparent 65.1%),
+                        radial-gradient(circle at 100% 50%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) 90%, transparent 90.1%);
+    }
+  </style>
+</head>
+<body class="flex justify-center items-center min-h-screen p-0 sm:p-4">
+
+  <!-- Mobile Frame Container -->
+  <div class="w-full max-w-md bg-[#edf0f2] min-h-screen sm:min-h-[844px] sm:max-h-[844px] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden relative border border-gray-300">
+
+    <!-- ==========================================
+         SCREEN 1: HOME (Início - Carteira Digital)
+         ========================================== -->
+    <div id="screen-home" class="screen-view w-full h-full flex flex-col justify-between">
+      
+      <!-- Top Header -->
+      <header class="bg-[#06265e] text-white px-4 py-3 flex items-center justify-between shadow-md shrink-0">
+        <div class="flex items-center gap-3">
+          <button onclick="toast('Menu principal')" class="text-white hover:text-gray-200 text-lg">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <span class="font-extrabold text-lg tracking-wider uppercase">HELOANY</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="toast('Sem novas notificações')" class="text-white hover:text-gray-200 relative text-lg">
+            <i class="fa-regular fa-bell"></i>
+            <span class="absolute top-0 right-0 w-2 h-2 bg-amber-400 rounded-full"></span>
+          </button>
+          <div class="w-8 h-8 rounded-full border-2 border-white/80 flex items-center justify-center font-bold text-xs text-white bg-blue-900">
+            J
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Action Tiles Grid -->
+      <main class="flex-1 p-4 space-y-3.5 overflow-y-auto hide-scrollbar">
+        
+        <!-- Tile 1: CONDUTOR (Green) -->
+        <div onclick="navigateTo('screen-condutor')" class="bg-[#05a65a] tile-wave text-white rounded-2xl p-4 shadow-lg cursor-pointer transform active:scale-[0.98] transition flex items-center justify-between relative overflow-hidden min-h-[105px]">
+          <div class="z-10 pr-2">
+            <h2 class="text-base font-extrabold uppercase tracking-wide leading-tight">CONDUTOR</h2>
+            <p class="text-xs text-emerald-100 font-medium mt-0.5">Gerencie sua<br><strong class="font-extrabold">habilitação</strong></p>
+          </div>
+          <div class="z-10 text-4xl opacity-90 text-white shrink-0">
+            <i class="fa-solid fa-id-card-clip"></i>
+          </div>
+        </div>
+
+        <!-- Tile 2: VEÍCULOS (Yellow/Amber) -->
+        <div onclick="toast('Acessando seção de Veículos...')" class="bg-[#ffd322] tile-wave text-slate-900 rounded-2xl p-4 shadow-lg cursor-pointer transform active:scale-[0.98] transition flex items-center justify-between relative overflow-hidden min-h-[105px]">
+          <div class="z-10 pr-2">
+            <h2 class="text-base font-extrabold uppercase tracking-wide leading-tight text-slate-900">VEÍCULOS</h2>
+            <p class="text-xs text-slate-800 font-medium mt-0.5">Acesso ao CRLV digital,<br>venda digital</p>
+          </div>
+          <div class="z-10 text-4xl text-slate-900 opacity-85 shrink-0">
+            <i class="fa-solid fa-car"></i>
+          </div>
+        </div>
+
+        <!-- Tile 3: INFRAÇÕES (Dark Blue) -->
+        <div onclick="toast('Acessando seção de Infrações...')" class="bg-[#173f9b] tile-wave text-white rounded-2xl p-4 shadow-lg cursor-pointer transform active:scale-[0.98] transition flex items-center justify-between relative overflow-hidden min-h-[105px]">
+          <div class="z-10 pr-2">
+            <h2 class="text-base font-extrabold uppercase tracking-wide leading-tight">INFRAÇÕES</h2>
+            <p class="text-xs text-blue-100 font-medium mt-0.5">Visualize e pague infrações<br>com até <strong class="font-extrabold">40% de desconto</strong></p>
+          </div>
+          <div class="z-10 text-4xl opacity-90 text-white shrink-0">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+        </div>
+
+        <!-- Tile 4: EDUCAÇÃO (Light Blue) -->
+        <div onclick="toast('Acessando seção de Educação...')" class="bg-[#68b9e9] tile-wave text-white rounded-2xl p-4 shadow-lg cursor-pointer transform active:scale-[0.98] transition flex items-center justify-between relative overflow-hidden min-h-[105px]">
+          <div class="z-10 pr-2">
+            <h2 class="text-base font-extrabold uppercase tracking-wide leading-tight">EDUCAÇÃO</h2>
+            <p class="text-xs text-sky-50 font-medium mt-0.5">Conheça nossas<br><strong class="font-extrabold">campanhas e projetos</strong></p>
+          </div>
+          <div class="z-10 text-4xl opacity-90 text-white shrink-0">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+
+    <!-- ==========================================
+         SCREEN 2: CONDUTOR DETAILS
+         ========================================== -->
+    <div id="screen-condutor" class="screen-view w-full h-full flex flex-col justify-between hidden">
+      
+      <!-- Header -->
+      <header class="bg-[#06265e] text-white px-4 py-3.5 flex items-center gap-3.5 shadow-md shrink-0">
+        <button onclick="navigateTo('screen-home')" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition shrink-0">
+          <i class="fa-solid fa-chevron-left text-sm"></i>
+        </button>
+        <h1 class="text-base font-bold uppercase tracking-wider">CONDUTOR</h1>
+      </header>
+
+      <!-- Condutor Info Body -->
+      <main class="flex-1 p-4 space-y-4 overflow-y-auto hide-scrollbar">
+        
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200/80">
+          <h2 class="text-sm font-extrabold text-gray-800 border-b border-gray-100 pb-2.5 mb-3">Informações do Condutor</h2>
+          
+          <div class="space-y-3.5 text-xs">
+            <div>
+              <p class="text-[11px] text-gray-400 font-bold">Nome</p>
+              <p class="font-bold text-gray-800 uppercase text-xs mt-0.5" id="driver-name">HELOANY KAFKA VARELA</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <p class="text-[11px] text-gray-400 font-bold">CPF</p>
+                <p class="font-bold text-gray-800 mt-0.5" id="driver-cpf">152.041.359-95</p>
+              </div>
+              <div>
+                <p class="text-[11px] text-gray-400 font-bold">Sexo</p>
+                <p class="font-bold text-gray-800 mt-0.5">FEMININO</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <p class="text-[11px] text-gray-400 font-bold">Categoria</p>
+                <p class="font-bold text-gray-800 mt-0.5">AB</p>
+              </div>
+              <div>
+                <p class="text-[11px] text-gray-400 font-bold">UF de Emissão</p>
+                <p class="font-bold text-gray-800 mt-0.5">PR</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <p class="text-[11px] text-gray-400 font-bold">Data de Validade</p>
+                <p class="font-bold text-gray-800 mt-0.5">04/03/2027</p>
+              </div>
+              <div>
+                <p class="text-[11px] text-gray-400 font-bold">Data de Emissão</p>
+                <p class="font-bold text-gray-800 mt-0.5">04/03/2026</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- Two Action Cards Bottom -->
+      <footer class="p-4 grid grid-cols-2 gap-3 bg-[#edf0f2] border-t border-gray-200/60 shrink-0">
+        
+        <button onclick="navigateTo('screen-cnh')" class="bg-white hover:bg-gray-50 p-4 rounded-2xl shadow-md border border-gray-200/80 flex flex-col items-center justify-center text-center transition active:scale-[0.97]">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#06265e] flex items-center justify-center mb-2">
+            <i class="fa-solid fa-address-card text-lg"></i>
+          </div>
+          <span class="text-[11px] font-extrabold text-[#06265e] uppercase tracking-tight leading-tight">ACESSAR CNH</span>
+        </button>
+
+        <button onclick="toast('Acessando Cadastro Positivo...')" class="bg-white hover:bg-gray-50 p-4 rounded-2xl shadow-md border border-gray-200/80 flex flex-col items-center justify-center text-center transition active:scale-[0.97]">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#06265e] flex items-center justify-center mb-2">
+            <i class="fa-solid fa-user-shield text-lg"></i>
+          </div>
+          <span class="text-[11px] font-extrabold text-[#06265e] uppercase tracking-tight leading-tight">ACESSAR CADASTRO POSITIVO</span>
+        </button>
+
+      </footer>
+
+    </div>
+
+
+    <!-- ==========================================
+         SCREEN 3: CNH DIGITAL DOCUMENT VIEWER
+         ========================================== -->
+    <div id="screen-cnh" class="screen-view w-full h-full flex flex-col justify-between hidden">
+      
+      <!-- Dark Navy Blue Top Header (#031d45) -->
+      <header class="bg-[#031d45] text-white px-4 py-3 flex items-center gap-3.5 shadow-md shrink-0">
+        <button onclick="navigateTo('screen-condutor')" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition shrink-0">
+          <i class="fa-solid fa-chevron-left text-sm"></i>
+        </button>
+        <div>
+          <h1 class="text-base font-bold tracking-wide uppercase leading-tight">HABILITAÇÃO</h1>
+          <p class="text-[11px] text-blue-200" id="header-timestamp">Atualizado em: --/--/---- - --:--:--</p>
+        </div>
+      </header>
+
+      <!-- Vio Verification Sub-bar -->
+      <div class="bg-[#edf0f2] text-[#1e3a8a] text-center text-xs py-2 px-3 border-b border-gray-200/80 font-medium shrink-0">
+        Verifique autenticidade do QR Code com o app <a href="#" onclick="toast('Link do aplicativo Vio.'); return false;" class="underline font-bold text-blue-700">Vio</a>
+      </div>
+
+      <!-- PDF Attachment Bar (AUTOMATICALLY HIDES ON UPLOAD) -->
+      <div id="upload-bar" class="px-4 py-2 bg-white border-b border-gray-200 flex items-center justify-between gap-2 shrink-0 z-10">
+        <span class="text-xs text-gray-600 font-semibold truncate" id="selected-file-name">Nenhum PDF selecionado</span>
+        <label class="bg-blue-700 hover:bg-blue-800 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow cursor-pointer transition shrink-0">
+          <i class="fa-solid fa-file-pdf mr-1"></i> Carregar PDF
+          <input type="file" id="pdf-input" accept="application/pdf" class="hidden" onchange="loadCustomPDF(event)">
+        </label>
+      </div>
+
+      <!-- PDF Reader Canvas / Carousel -->
+      <main class="flex-1 relative overflow-hidden flex flex-col items-center justify-center p-2 bg-[#edf0f2]">
+        
+        <!-- Track of Carousel Pages -->
+        <div id="carousel-track" class="w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar items-center">
+          <!-- Placeholder State -->
+          <div class="w-full h-full flex-shrink-0 snap-center p-4 flex flex-col items-center justify-center text-center text-gray-500">
+            <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-3 text-blue-900 border border-gray-200">
+              <i class="fa-regular fa-file-pdf text-3xl"></i>
+            </div>
+            <p class="font-bold text-sm text-gray-700">Nenhum documento anexado</p>
+            <p class="text-xs text-gray-500 mt-1 max-w-xs">Carregue um arquivo PDF na barra acima para visualização no modelo oficial da CNH Digital.</p>
+          </div>
+        </div>
+
+        <!-- Floating Zoom Button (Bottom Left) -->
+        <button onclick="toggleZoom()" id="btn-zoom" class="absolute bottom-2 left-4 bg-white shadow-md border border-gray-200 text-blue-900 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-50 transition z-20">
+          <i class="fa-solid fa-magnifying-glass-plus text-sm"></i>
+        </button>
+
+        <!-- Page Indicator Dots (4 Dots) -->
+        <div class="flex items-center justify-center gap-2.5 py-3 shrink-0 z-10">
+          <button onclick="scrollToSlide(0)" id="dot-0" class="w-2.5 h-2.5 rounded-full bg-blue-700 transition-all"></button>
+          <button onclick="scrollToSlide(1)" id="dot-1" class="w-2.5 h-2.5 rounded-full bg-gray-300 transition-all"></button>
+          <button onclick="scrollToSlide(2)" id="dot-2" class="w-2.5 h-2.5 rounded-full bg-gray-300 transition-all"></button>
+          <button onclick="scrollToSlide(3)" id="dot-3" class="w-2.5 h-2.5 rounded-full bg-gray-300 transition-all"></button>
+        </div>
+
+      </main>
+
+      <!-- Bottom Action Buttons -->
+      <footer class="p-4 space-y-3 bg-[#edf0f2] border-t border-gray-200/60 shrink-0">
+        
+        <button onclick="toast('Histórico de emissões da CNH.')" class="w-full bg-white hover:bg-gray-50 text-blue-800 font-bold py-3.5 px-4 rounded-xl shadow-md border border-gray-100 flex items-center gap-4 transition text-left active:scale-[0.98]">
+          <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-address-card text-base"></i>
+          </div>
+          <span class="text-sm tracking-tight text-blue-900">Histórico de emissões da CNH</span>
+        </button>
+
+        <button onclick="downloadCurrentPDF()" class="w-full bg-white hover:bg-gray-50 text-blue-800 font-bold py-3.5 px-4 rounded-xl shadow-md border border-gray-100 flex items-center gap-4 transition text-left active:scale-[0.98]">
+          <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-file-export text-base"></i>
+          </div>
+          <span class="text-sm tracking-tight text-blue-900">Exportar</span>
+        </button>
+
+      </footer>
+
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-4 py-2.5 rounded-xl shadow-xl opacity-0 transition-opacity pointer-events-none z-50 text-center max-w-[90%]"></div>
+
+  </div>
+
+  <script>
+    // PDF.js Engine Setup
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    let pdfDoc = null;
+    let isZoomed = false;
+    let currentPdfFile = null;
+
+    // View Switching Logic
+    function navigateTo(screenId) {
+      document.querySelectorAll('.screen-view').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(screenId);
+      if (target) {
+        target.classList.remove('hidden');
+      }
+      if (screenId === 'screen-cnh') {
+        updateTimestamp();
+      }
+    }
+
+    // Load PDF Function
+    function loadCustomPDF(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        toast('Por favor, selecione um arquivo PDF válido.');
+        return;
+      }
+
+      currentPdfFile = file;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const typedarray = new Uint8Array(e.target.result);
+        pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+          pdfDoc = pdf;
+          renderCarouselPages();
+          
+          // HIDE UPLOAD OPTION COMPLETELY
+          const uploadBar = document.getElementById('upload-bar');
+          if (uploadBar) {
+            uploadBar.style.display = 'none';
+          }
+
+          toast('PDF carregado com sucesso!');
+        });
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Render PDF Pages into Carousel
+    function renderCarouselPages() {
+      const track = document.getElementById('carousel-track');
+      track.innerHTML = '';
+
+      if (!pdfDoc) return;
+
+      const totalPages = Math.min(pdfDoc.numPages, 4);
+
+      for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+        const slide = document.createElement('div');
+        slide.className = 'w-full h-full flex-shrink-0 snap-center p-2 flex items-center justify-center';
+        
+        const canvas = document.createElement('canvas');
+        canvas.className = 'max-w-full max-h-full object-contain rounded-lg shadow-md bg-white transition-transform duration-200';
+        
+        slide.appendChild(canvas);
+        track.appendChild(slide);
+
+        pdfDoc.getPage(pageNum).then(page => {
+          const viewport = page.getViewport({ scale: 1.5 });
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          page.render({
+            canvasContext: context,
+            viewport: viewport
+          });
+        });
+      }
+    }
+
+    // Carousel Navigation
+    function scrollToSlide(index) {
+      const track = document.getElementById('carousel-track');
+      const width = track.clientWidth;
+      track.scrollTo({
+        left: width * index,
+        behavior: 'smooth'
+      });
+    }
+
+    // Toggle Zoom Level
+    function toggleZoom() {
+      isZoomed = !isZoomed;
+      const canvases = document.querySelectorAll('#carousel-track canvas');
+      canvases.forEach(canvas => {
+        canvas.style.transform = isZoomed ? 'scale(1.35)' : 'scale(1)';
+      });
+      document.getElementById('btn-zoom').innerHTML = isZoomed 
+        ? '<i class="fa-solid fa-magnifying-glass-minus text-sm"></i>' 
+        : '<i class="fa-solid fa-magnifying-glass-plus text-sm"></i>';
+    }
+
+    // Download PDF Action
+    function downloadCurrentPDF() {
+      if (!currentPdfFile) {
+        toast('Por favor, carregue um arquivo PDF primeiro.');
+        return;
+      }
+      const url = URL.createObjectURL(currentPdfFile);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = currentPdfFile.name || 'documento_cnh.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('Baixando arquivo...');
+    }
+
+    // Live Header Timestamp
+    function updateTimestamp() {
+      const now = new Date();
+      const date = now.toLocaleDateString('pt-BR');
+      const time = now.toLocaleTimeString('pt-BR', { hour12: false });
+      const el = document.getElementById('header-timestamp');
+      if (el) {
+        el.textContent = 'Atualizado em: ' + date + ' - ' + time;
+      }
+    }
+
+    // Toast Messenger
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.style.opacity = '1';
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => el.style.opacity = '0', 2500);
+    }
+
+    // Carousel Scroll Dot Sync
+    const track = document.getElementById('carousel-track');
+    track.addEventListener('scroll', () => {
+      const width = track.clientWidth;
+      const activeIndex = Math.round(track.scrollLeft / width);
+
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById('dot-' + i);
+        if (dot) {
+          dot.className = (i === activeIndex) 
+            ? 'w-2.5 h-2.5 rounded-full bg-blue-700 transition-all' 
+            : 'w-2.5 h-2.5 rounded-full bg-gray-300 transition-all';
+        }
+      }
+    });
+
+    setInterval(updateTimestamp, 1000);
+    updateTimestamp();
+  </script>
+</body>
+</html>
